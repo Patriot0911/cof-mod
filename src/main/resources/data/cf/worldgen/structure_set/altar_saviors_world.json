@@ -1,0 +1,17 @@
+{
+    "structures": [
+        {
+            "structure": "cf:altar_saviors_world",
+            "weight": 1
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+
+        "salt": 1692554081,
+
+        "spacing": 10,
+
+        "separation": 6
+    }
+}

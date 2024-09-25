@@ -1,4 +1,4 @@
-package com.example.examplemod.item.custom_items_properties;
+package com.modding.cf.item.custom_items_properties;
 
 import net.minecraft.world.item.Item.Properties;
 

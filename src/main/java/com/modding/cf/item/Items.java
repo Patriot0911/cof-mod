@@ -1,8 +1,8 @@
-package com.example.examplemod.item;
+package com.modding.cf.item;
 
-import com.example.examplemod.ExampleMod;
-import com.example.examplemod.item.custom_items.BasicStaff;
-import com.example.examplemod.item.custom_items_properties.BasicStaffProperties;
+import com.modding.cf.ExampleMod;
+import com.modding.cf.item.custom_items.BasicStaff;
+import com.modding.cf.item.custom_items_properties.BasicStaffProperties;
 
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
