@@ -1,4 +1,4 @@
-package com.modding.cf.item.custom_items;
+package com.modding.cof.item.custom_items;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

@@ -1,4 +1,4 @@
-package com.modding.cf.client.screen;
+package com.modding.cof.client.screen;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkillTreeScreen extends Screen {
-    private static final ResourceLocation BACKGROUND_TEXTURE = 
+    private static final ResourceLocation BACKGROUND_TEXTURE =
         new ResourceLocation("examplemod", "textures/gui/skill_tree_background.png");
 
     private float scrollX, scrollY;

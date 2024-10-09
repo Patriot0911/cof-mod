@@ -1,9 +1,9 @@
-package com.modding.cf.client.init;
+package com.modding.cof.client.init;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.modding.cf.ExampleMod;
-import com.modding.cf.client.screen.SkillTreeScreen;
+import com.modding.cof.CoFMod;
+import com.modding.cof.client.screen.SkillTreeScreen;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -15,18 +15,18 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-@EventBusSubscriber(modid = ExampleMod.MOD_ID, bus = Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = CoFMod.MOD_ID, bus = Bus.MOD, value = Dist.CLIENT)
 public class Keybinds {
   private static final KeyMapping SKILL_TREE_KEY =
       new KeyMapping(
-          "key.display_skill_tree", GLFW.GLFW_KEY_O, "key.categories." + ExampleMod.MOD_ID);
+          "key.display_skill_tree", GLFW.GLFW_KEY_O, "key.categories." + CoFMod.MOD_ID);
 
   @SubscribeEvent
   public static void registerKeybinds(RegisterKeyMappingsEvent event) {
     event.register(SKILL_TREE_KEY);
   }
 
-  @EventBusSubscriber(modid = ExampleMod.MOD_ID, value = Dist.CLIENT)
+  @EventBusSubscriber(modid = CoFMod.MOD_ID, value = Dist.CLIENT)
   private static class KeyEvents {
     @SubscribeEvent
     public static void keyPressed(InputEvent.Key event) {
@@ -34,7 +34,7 @@ public class Keybinds {
       if (minecraft.player == null || minecraft.screen != null) return;
       if (event.getKey() == SKILL_TREE_KEY.getKey().getValue()) {
         minecraft.setScreen(
-            new SkillTreeScreen(new ResourceLocation(ExampleMod.MOD_ID, "main_tree")));
+            new SkillTreeScreen(new ResourceLocation(CoFMod.MOD_ID, "main_tree")));
       }
     }
   }

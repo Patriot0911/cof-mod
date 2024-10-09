@@ -1,6 +1,6 @@
-package com.modding.cf;
+package com.modding.cof;
 
-import com.modding.cf.item.Items;
+import com.modding.cof.item.Items;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,13 +16,13 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(ExampleMod.MOD_ID)
-public class ExampleMod
+@Mod(CoFMod.MOD_ID)
+public class CoFMod
 {
-    public static final String MOD_ID = "cf";
+    public static final String MOD_ID = "cof";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public ExampleMod()
+    public CoFMod()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);

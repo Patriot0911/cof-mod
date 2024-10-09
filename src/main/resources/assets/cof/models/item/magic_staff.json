@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "examplemod:item/magicStaff"
+        "layer0": "cof:item/magic_staff"
     }
 }
