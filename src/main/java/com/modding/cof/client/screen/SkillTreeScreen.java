@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SkillTreeScreen extends Screen {
     private static final ResourceLocation BACKGROUND_TEXTURE =
-        new ResourceLocation("examplemod", "textures/gui/skill_tree_background.png");
+        new ResourceLocation("cof", "textures/gui/skill_tree_background.png");
 
     private float scrollX, scrollY;
     private int screenWidth, screenHeight;
