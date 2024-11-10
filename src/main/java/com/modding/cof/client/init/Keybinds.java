@@ -34,7 +34,8 @@ public class Keybinds {
       if (minecraft.player == null || minecraft.screen != null) return;
       if (event.getKey() == SKILL_TREE_KEY.getKey().getValue()) {
         minecraft.setScreen(
-            new SkillTreeScreen(new ResourceLocation(CoFMod.MOD_ID, "main_tree")));
+          new SkillTreeScreen(new ResourceLocation(CoFMod.MOD_ID, "main_tree"))
+        );
       }
     }
   }

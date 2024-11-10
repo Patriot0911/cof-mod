@@ -9,17 +9,18 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkillTreeScreen extends Screen {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("cof", "textures/gui/skill_tree_background.png");
+    // private static final ResourceLocation ICON_TEXTURE = new ResourceLocation("cof", "textures/gui/skill_icon.jpg");
     public static final int BACKGROUND_SIZE = 2048;
 
-    private float scrollX = 0, scrollY = 0;
+    public float scrollX = 0, scrollY = 0;
     private int screenWidth, screenHeight;
+    private boolean dragging = false;
     private float zoomLevel = 1.0f;
     private List<SkillButton> skillButtons = new ArrayList<>();
 
@@ -33,42 +34,18 @@ public class SkillTreeScreen extends Screen {
         clearWidgets();
         skillButtons.clear();
 
-        screenWidth = 4 * this.width / 5;
-        screenHeight = 4 * this.height / 5;
+        this.screenWidth = 4 * this.width / 5;
+        this.screenHeight = 4 * this.height / 5;
 
-        int buttonX = (this.width + screenWidth) / 2 - 25;
-        int buttonY = (this.height - screenHeight) / 2 + 5;
+        // int buttonX = (this.width + screenWidth) / 2 - 25;
+        // int buttonY = (this.height - screenHeight) / 2 + 5;
 
-        addRenderableWidget(new Button(buttonX, buttonY, 20, 20, Component.literal("X"), button -> {
-            this.onClose();
-        }));
+        // addRenderableWidget(
+        //     new Button(buttonX, buttonY, 20, 20, Component.literal("X"), button -> {
+        //     this.onClose();
+        // }));
 
         addSkillButtons();
-    }
-
-    private void addSkillButtons() {
-        int buttonSize = 20;
-        int centerX = this.width / 2;
-        int centerY = this.height / 2;
-
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                int x = centerX + (i - 2) * 40 - buttonSize / 2;
-                int y = centerY + (j - 2) * 40 - buttonSize / 2;
-                SkillButton skillButton = new SkillButton(x, y, buttonSize, buttonSize, Component.literal("Skill"));
-                skillButtons.add(skillButton);
-                addRenderableWidget(skillButton);
-            }
-        }
-
-        if (skillButtons.size() > 1) {
-            for (int i = 0; i < skillButtons.size() - 1; i++) {
-                SkillButton button1 = skillButtons.get(i);
-                SkillButton button2 = skillButtons.get(i + 1);
-                button1.addConnection(button2);
-                button2.addConnection(button1);
-            }
-        }
     }
 
     @Override
@@ -81,7 +58,7 @@ public class SkillTreeScreen extends Screen {
         poseStack.translate(bgLeft, bgTop, 0);
         RenderSystem.enableScissor(bgLeft, bgTop, BACKGROUND_SIZE, BACKGROUND_SIZE);
 
-        renderSkills(poseStack);
+        // renderSkills(poseStack);
 
         RenderSystem.disableScissor();
         poseStack.popPose();
@@ -104,28 +81,37 @@ public class SkillTreeScreen extends Screen {
         blit(poseStack, x, y, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
     }
 
-    private void renderSkills(PoseStack poseStack) {
-        poseStack.pushPose();
-        poseStack.translate(scrollX, scrollY, 0);
-        poseStack.scale(zoomLevel, zoomLevel, 1.0f);
-
-        for (SkillButton skillButton : skillButtons) {
-            for (SkillButton connectedButton : skillButton.getConnectedButtons()) {
-                drawLineBetweenButtons(poseStack, skillButton, connectedButton, 0xFFFFFF);
-            }
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            dragging = true;
         }
-
-        poseStack.popPose();
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private void drawLineBetweenButtons(PoseStack poseStack, SkillButton button1, SkillButton button2, int color) {
-        int startX = (int) ((button1.x + button1.getWidth() / 2) * zoomLevel);
-        int startY = (int) ((button1.y + button1.getHeight() / 2) * zoomLevel);
-        int endX = (int) ((button2.x + button2.getWidth() / 2) * zoomLevel);
-        int endY = (int) ((button2.y + button2.getHeight() / 2) * zoomLevel);
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            dragging = false;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
 
-        this.hLine(poseStack, startX, endX, startY, color);
-        this.vLine(poseStack, startX, startY, endY, color);
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (button == 0 && dragging) {
+            // Обчислюємо зміщення миші та пересуваємо вміст вікна
+            scrollX -= deltaX;
+            scrollY -= deltaY;
+
+            // // Запобігаємо виходу за межі мапи
+            // // scrollX = Mth.clamp(scrollX, -MAP_WIDTH + contentWidth, 0);
+            // scrollX = Mth.clamp(scrollX, screenWidth, 0);
+            // // scrollY = Mth.clamp(scrollY, -MAP_HEIGHT + contentHeight, 0);
+            // scrollY = Mth.clamp(scrollY, screenHeight, 0);
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
     @Override
@@ -137,4 +123,60 @@ public class SkillTreeScreen extends Screen {
         }
         return true;
     }
+
+
+    private void addSkillButtons() {
+        int buttonSize = 20;
+        int centerX = this.width / 2;
+        int centerY = this.height / 2;
+
+        // int adjustedWidth = screenWidth;
+        // int adjustedHeight = screenHeight;
+
+        // int x = centerX - adjustedWidth / 2;
+        // int y = centerY - adjustedHeight / 2;
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                int x = centerX + (i - 2) * 40 - buttonSize / 2;
+                int y = centerY + (j - 2) * 40 - buttonSize / 2;
+                SkillButton skillButton = new SkillButton(x, y, buttonSize, buttonSize, Component.literal("Skill"), this);
+                skillButtons.add(skillButton);
+                addRenderableWidget(skillButton);
+            }
+        }
+
+        // if (skillButtons.size() > 1) {
+        //     for (int i = 0; i < skillButtons.size() - 1; i++) {
+        //         SkillButton button1 = skillButtons.get(i);
+        //         SkillButton button2 = skillButtons.get(i + 1);
+        //         button1.addConnection(button2);
+        //         button2.addConnection(button1);
+        //     }
+        // }
+    }
+
+    // private void renderSkills(PoseStack poseStack) {
+    //     poseStack.pushPose();
+    //     poseStack.translate(scrollX, scrollY, 0);
+    //     poseStack.scale(zoomLevel, zoomLevel, 1.0f);
+
+    //     for (SkillButton skillButton : skillButtons) {
+    //         for (SkillButton connectedButton : skillButton.getConnectedButtons()) {
+    //             drawLineBetweenButtons(poseStack, skillButton, connectedButton, 0xFFFFFF);
+    //         }
+    //     }
+
+    //     poseStack.popPose();
+    // }
+
+    // private void drawLineBetweenButtons(PoseStack poseStack, SkillButton button1, SkillButton button2, int color) {
+        // int startX = (int) ((button1.x + button1.getWidth() / 2) * zoomLevel);
+        // int startY = (int) ((button1.y + button1.getHeight() / 2) * zoomLevel);
+        // int endX = (int) ((button2.x + button2.getWidth() / 2) * zoomLevel);
+        // int endY = (int) ((button2.y + button2.getHeight() / 2) * zoomLevel);
+
+        // this.hLine(poseStack, startX, endX, startY, color);
+        // this.vLine(poseStack, startX, startY, endY, color);
+    // }
 }

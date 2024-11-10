@@ -14,11 +14,17 @@ import net.minecraft.resources.ResourceLocation;
 public class SkillButton extends Button {
     private static final ResourceLocation ICON_TEXTURE = new ResourceLocation("cof", "textures/gui/skill_icon.jpg");
     private List<SkillButton> connectedButtons = new ArrayList<>();
+    private SkillTreeScreen parentScreen;
+    private int startX;
+    private int startY;
 
-    public SkillButton(int x, int y, int width, int height, Component message) {
+    public SkillButton(int x, int y, int width, int height, Component message, SkillTreeScreen screen) {
         super(x, y, width, height, message, button -> {
             System.out.println("Skill button clicked!");
         });
+        this.startX = x;
+        this.startY = y;
+        this.parentScreen = screen;
     }
 
     public void addConnection(SkillButton button) {
@@ -36,6 +42,10 @@ public class SkillButton extends Button {
         Minecraft mc = Minecraft.getInstance();
         boolean isHovered = isHoveredOrFocused();
 
+        x = (int) (startX-parentScreen.scrollX);
+        y = (int) (startY-parentScreen.scrollY);
+
+        // RenderSystem.enableScissor(x, y, x + (int) width/2, y + height);
         fill(poseStack, x, y, x + width, y + height, isHovered ? 0xA0000000 : 0x80000000);
 
         RenderSystem.setShaderTexture(0, ICON_TEXTURE);
@@ -43,6 +53,8 @@ public class SkillButton extends Button {
         poseStack.translate(x, y, 0);
         blit(poseStack, 0, 0, 0, 0, width, height, width, height);
         poseStack.popPose();
+
+        // RenderSystem.disableScissor();
 
         if (isHovered) {
             drawCenteredString(poseStack, mc.font, getMessage(), x + width / 2, y + (height - 8) / 2, 0xFFFFFF);

@@ -2,17 +2,13 @@ package com.modding.cof;
 
 import org.slf4j.Logger;
 
-import com.modding.cof.capabilities.level.PlayerLevelProvider;
 import com.modding.cof.item.Items;
 import com.modding.cof.network.NetworkManager;
-import com.modding.cof.network.packet.PlayerLevelSyncS2CPacket;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
