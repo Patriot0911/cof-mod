@@ -27,6 +27,13 @@ public class SkillButton extends Button {
         this.parentScreen = screen;
     }
 
+    @Override
+    public void onClick(double p_93371_, double p_93372_) {
+        // ++parentScreen.doneSkills;
+        parentScreen.addSkill();
+        super.onClick(p_93371_, p_93372_);
+    }
+
     public void addConnection(SkillButton button) {
         if (!connectedButtons.contains(button)) {
             connectedButtons.add(button);
@@ -45,11 +52,14 @@ public class SkillButton extends Button {
         x = (int) (startX-parentScreen.scrollX);
         y = (int) (startY-parentScreen.scrollY);
 
+        float paddingTop = (float) (parentScreen.screenHeight*0.0349744686);
+        float paddingLeft = (float) (parentScreen.screenWidth*0.0170898438);
+
         RenderSystem.enableScissor(
-            (int) ((parentScreen.window_startX+parentScreen.windowPadding)*mc.getWindow().getGuiScale()),
-            (int) ((parentScreen.window_startY+parentScreen.windowPadding)*mc.getWindow().getGuiScale()),
-            (int) (parentScreen.screenWidth*mc.getWindow().getGuiScale()),
-            (int) (parentScreen.screenHeight*mc.getWindow().getGuiScale())
+            (int) ((parentScreen.window_startX+paddingLeft)*mc.getWindow().getGuiScale()),
+            (int) ((parentScreen.window_startY+paddingTop)*mc.getWindow().getGuiScale()),
+            (int) ((parentScreen.screenWidth-paddingLeft*2)*mc.getWindow().getGuiScale()),
+            (int) ((parentScreen.screenHeight-paddingTop*2)*mc.getWindow().getGuiScale())
         );
         fill(poseStack, x, y, x + width, y + height, isHovered ? 0xA0000000 : 0x80000000);
 

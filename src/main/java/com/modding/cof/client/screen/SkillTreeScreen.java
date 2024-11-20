@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkillTreeScreen extends Screen {
-    public final int windowPadding = 35;
+    public final int windowPadding = 3;
     public final int BACKGROUND_SIZE = 2048;
     public final float minScrollX = 0, minScrollY = 0;
 
@@ -111,19 +111,18 @@ public class SkillTreeScreen extends Screen {
     }
 
 
+    public static int doneSkills = 1;
+
     private void addSkillButtons() {
         int buttonSize = 20;
         int centerX = this.width / 2;
         int centerY = this.height / 2;
 
-        // int adjustedWidth = screenWidth;
-        // int adjustedHeight = screenHeight;
-
-        // int x = centerX - adjustedWidth / 2;
-        // int y = centerY - adjustedHeight / 2;
-
         for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < doneSkills; j++) {
+                if(i+j > doneSkills) {
+                    break;
+                };
                 int x = centerX + (i - 2) * 40 - buttonSize / 2;
                 int y = centerY + (j - 2) * 40 - buttonSize / 2;
                 SkillButton skillButton = new SkillButton(x, y, buttonSize, buttonSize, Component.literal("Skill"), this);
@@ -131,38 +130,16 @@ public class SkillTreeScreen extends Screen {
                 addRenderableWidget(skillButton);
             }
         }
-
-        // if (skillButtons.size() > 1) {
-        //     for (int i = 0; i < skillButtons.size() - 1; i++) {
-        //         SkillButton button1 = skillButtons.get(i);
-        //         SkillButton button2 = skillButtons.get(i + 1);
-        //         button1.addConnection(button2);
-        //         button2.addConnection(button1);
-        //     }
-        // }
     }
-
-    // private void renderSkills(PoseStack poseStack) {
-    //     poseStack.pushPose();
-    //     poseStack.translate(scrollX, scrollY, 0);
-    //     poseStack.scale(zoomLevel, zoomLevel, 1.0f);
-
-    //     for (SkillButton skillButton : skillButtons) {
-    //         for (SkillButton connectedButton : skillButton.getConnectedButtons()) {
-    //             drawLineBetweenButtons(poseStack, skillButton, connectedButton, 0xFFFFFF);
-    //         }
-    //     }
-
-    //     poseStack.popPose();
-    // }
-
-    // private void drawLineBetweenButtons(PoseStack poseStack, SkillButton button1, SkillButton button2, int color) {
-        // int startX = (int) ((button1.x + button1.getWidth() / 2) * zoomLevel);
-        // int startY = (int) ((button1.y + button1.getHeight() / 2) * zoomLevel);
-        // int endX = (int) ((button2.x + button2.getWidth() / 2) * zoomLevel);
-        // int endY = (int) ((button2.y + button2.getHeight() / 2) * zoomLevel);
-
-        // this.hLine(poseStack, startX, endX, startY, color);
-        // this.vLine(poseStack, startX, startY, endY, color);
-    // }
+    public void addSkill() {
+        int buttonSize = 20;
+        int centerX = this.width / 2;
+        int centerY = this.height / 2;
+        ++doneSkills;
+        int x = centerX + ((int) (doneSkills/5) - 2) * 40 - buttonSize / 2;
+        int y = centerY + ((int) (doneSkills%5) - 2) * 40 - buttonSize / 2;
+        SkillButton skillButton = new SkillButton(x, y, buttonSize, buttonSize, Component.literal("Skill"), this);
+        skillButtons.add(skillButton);
+        addRenderableWidget(skillButton);
+    }
 }
