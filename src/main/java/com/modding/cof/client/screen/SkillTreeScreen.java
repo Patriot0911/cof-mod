@@ -14,15 +14,22 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkillTreeScreen extends Screen {
-    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("cof", "textures/gui/skill_tree_background.png");
-    // private static final ResourceLocation ICON_TEXTURE = new ResourceLocation("cof", "textures/gui/skill_icon.jpg");
-    public static final int BACKGROUND_SIZE = 2048;
+    public final int windowPadding = 35;
+    public final int BACKGROUND_SIZE = 2048;
+    public final float minScrollX = 0, minScrollY = 0;
 
+    private List<SkillButton> skillButtons = new ArrayList<>();
+
+    // Window sizes
+    private static final ResourceLocation BACKGROUND_TEXTURE =
+        new ResourceLocation("cof", "textures/gui/skill_tree_background.png");
+    public int window_startX, window_startY;
+    public int screenWidth, screenHeight;
+
+    // map sizing
     public float scrollX = 0, scrollY = 0;
-    private int screenWidth, screenHeight;
     private boolean dragging = false;
     private float zoomLevel = 1.0f;
-    private List<SkillButton> skillButtons = new ArrayList<>();
 
     public SkillTreeScreen(ResourceLocation skillTreeId) {
         super(Component.literal("Skill Tree"));
@@ -33,18 +40,8 @@ public class SkillTreeScreen extends Screen {
     public void init() {
         clearWidgets();
         skillButtons.clear();
-
         this.screenWidth = 4 * this.width / 5;
         this.screenHeight = 4 * this.height / 5;
-
-        // int buttonX = (this.width + screenWidth) / 2 - 25;
-        // int buttonY = (this.height - screenHeight) / 2 + 5;
-
-        // addRenderableWidget(
-        //     new Button(buttonX, buttonY, 20, 20, Component.literal("X"), button -> {
-        //     this.onClose();
-        // }));
-
         addSkillButtons();
     }
 
@@ -56,11 +53,6 @@ public class SkillTreeScreen extends Screen {
         int bgTop = (this.height - BACKGROUND_SIZE) / 2;
         poseStack.pushPose();
         poseStack.translate(bgLeft, bgTop, 0);
-        RenderSystem.enableScissor(bgLeft, bgTop, BACKGROUND_SIZE, BACKGROUND_SIZE);
-
-        // renderSkills(poseStack);
-
-        RenderSystem.disableScissor();
         poseStack.popPose();
 
         super.render(poseStack, mouseX, mouseY, partialTick);
@@ -69,16 +61,13 @@ public class SkillTreeScreen extends Screen {
     private void renderBackgroundTexture(PoseStack poseStack) {
         int centerX = this.width / 2;
         int centerY = this.height / 2;
-        int adjustedWidth = screenWidth;
-        int adjustedHeight = screenHeight;
-
-        int x = centerX - adjustedWidth / 2;
-        int y = centerY - adjustedHeight / 2;
+        this.window_startX = centerX - screenWidth / 2;
+        this.window_startY = centerY - screenHeight / 2;
 
         fill(poseStack, 0, 0, this.width, this.height, 0x88000000);
 
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
-        blit(poseStack, x, y, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
+        blit(poseStack, window_startX, window_startY, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
     }
 
     @Override
@@ -100,15 +89,12 @@ public class SkillTreeScreen extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         if (button == 0 && dragging) {
-            // Обчислюємо зміщення миші та пересуваємо вміст вікна
             scrollX -= deltaX;
             scrollY -= deltaY;
 
             // // Запобігаємо виходу за межі мапи
-            // // scrollX = Mth.clamp(scrollX, -MAP_WIDTH + contentWidth, 0);
-            // scrollX = Mth.clamp(scrollX, screenWidth, 0);
-            // // scrollY = Mth.clamp(scrollY, -MAP_HEIGHT + contentHeight, 0);
-            // scrollY = Mth.clamp(scrollY, screenHeight, 0);
+            // scrollX = Mth.clamp(scrollX, -(int)((-BACKGROUND_SIZE + screenWidth)*1.5), 0);
+            // scrollY = Mth.clamp(scrollY, (int)((-BACKGROUND_SIZE + screenHeight)*1.5), 0);
             return true;
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);

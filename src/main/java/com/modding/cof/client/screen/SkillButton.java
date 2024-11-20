@@ -45,7 +45,12 @@ public class SkillButton extends Button {
         x = (int) (startX-parentScreen.scrollX);
         y = (int) (startY-parentScreen.scrollY);
 
-        // RenderSystem.enableScissor(x, y, x + (int) width/2, y + height);
+        RenderSystem.enableScissor(
+            (int) ((parentScreen.window_startX+parentScreen.windowPadding)*mc.getWindow().getGuiScale()),
+            (int) ((parentScreen.window_startY+parentScreen.windowPadding)*mc.getWindow().getGuiScale()),
+            (int) (parentScreen.screenWidth*mc.getWindow().getGuiScale()),
+            (int) (parentScreen.screenHeight*mc.getWindow().getGuiScale())
+        );
         fill(poseStack, x, y, x + width, y + height, isHovered ? 0xA0000000 : 0x80000000);
 
         RenderSystem.setShaderTexture(0, ICON_TEXTURE);
@@ -53,11 +58,9 @@ public class SkillButton extends Button {
         poseStack.translate(x, y, 0);
         blit(poseStack, 0, 0, 0, 0, width, height, width, height);
         poseStack.popPose();
-
-        // RenderSystem.disableScissor();
-
         if (isHovered) {
             drawCenteredString(poseStack, mc.font, getMessage(), x + width / 2, y + (height - 8) / 2, 0xFFFFFF);
         }
+        RenderSystem.disableScissor();
     }
 }
