@@ -1,8 +1,5 @@
 package com.modding.cof.client.screen;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -13,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SkillButton extends Button {
     private static final ResourceLocation ICON_TEXTURE = new ResourceLocation("cof", "textures/gui/skill_icon.jpg");
-    private List<SkillButton> connectedButtons = new ArrayList<>();
     private SkillTreeScreen parentScreen;
     private int startX;
     private int startY;
@@ -32,16 +28,6 @@ public class SkillButton extends Button {
         // ++parentScreen.doneSkills;
         parentScreen.addSkill();
         super.onClick(p_93371_, p_93372_);
-    }
-
-    public void addConnection(SkillButton button) {
-        if (!connectedButtons.contains(button)) {
-            connectedButtons.add(button);
-        }
-    }
-
-    public List<SkillButton> getConnectedButtons() {
-        return connectedButtons;
     }
 
     @Override
@@ -69,8 +55,26 @@ public class SkillButton extends Button {
         blit(poseStack, 0, 0, 0, 0, width, height, width, height);
         poseStack.popPose();
         if (isHovered) {
+            parentScreen.toolTip = "This is a tooltip";
+            // .renderTooltip(poseStack, Component.literal("This is a tooltip"), mouseX, mouseY);
+            // renderTooltip(poseStack, mouseX, mouseY);
             drawCenteredString(poseStack, mc.font, getMessage(), x + width / 2, y + (height - 8) / 2, 0xFFFFFF);
         }
         RenderSystem.disableScissor();
+    }
+
+    private void renderTooltip(PoseStack poseStack, int mouseX, int mouseY) {
+        Minecraft mc = Minecraft.getInstance();
+
+        String tooltipText = "This is a skill tooltip!";
+        int tooltipWidth = mc.font.width(tooltipText) + 6;
+        int tooltipHeight = 12;
+
+        int tooltipX = mouseX + 10;
+        int tooltipY = mouseY + 10;
+
+        fill(poseStack, tooltipX, tooltipY, tooltipX + tooltipWidth, tooltipY + tooltipHeight, 0xCC000000);
+
+        mc.font.draw(poseStack, tooltipText, tooltipX + 3, tooltipY + 3, 0xFFFFFF);
     }
 }

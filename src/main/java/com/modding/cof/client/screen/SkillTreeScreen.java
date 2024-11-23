@@ -31,6 +31,8 @@ public class SkillTreeScreen extends Screen {
     private boolean dragging = false;
     private float zoomLevel = 1.0f;
 
+    public String toolTip = "";
+
     public SkillTreeScreen(ResourceLocation skillTreeId) {
         super(Component.literal("Skill Tree"));
         this.minecraft = Minecraft.getInstance();
@@ -56,6 +58,11 @@ public class SkillTreeScreen extends Screen {
         poseStack.popPose();
 
         super.render(poseStack, mouseX, mouseY, partialTick);
+        if(this.toolTip != null) {
+            // test version
+            this.renderTooltip(poseStack, Component.literal(toolTip), mouseX, mouseY);
+            this.toolTip = null;
+        };
     }
 
     private void renderBackgroundTexture(PoseStack poseStack) {

@@ -1,13 +1,14 @@
 package com.modding.cof.capabilities.playerXP;
 
 import com.modding.cof.capabilities.level.PlayerLevelProvider;
+import com.modding.cof.interfaces.ICapabilityCopyable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
 @AutoRegisterCapability
-public class PlayerXp {
+public class PlayerXp implements ICapabilityCopyable<PlayerXp> {
     private int xp;
 
     public int get() {

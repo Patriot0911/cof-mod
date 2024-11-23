@@ -1,8 +1,11 @@
 package com.modding.cof.events.capabilities;
 
 import com.modding.cof.CoFMod;
+import com.modding.cof.capabilities.PlayerCapabilitiesRegisterData;
 import com.modding.cof.capabilities.level.PlayerLevelProvider;
+import com.modding.cof.capabilities.playerSkills.PlayerSkillsProvider;
 import com.modding.cof.capabilities.playerXP.PlayerXpProvider;
+import com.modding.cof.interfaces.ICapabilityCopyable;
 import com.modding.cof.network.NetworkManager;
 import com.modding.cof.network.packet.PlayerLevelSyncS2CPacket;
 
@@ -10,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -18,6 +22,18 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = CoFMod.MOD_ID)
 public class InitCapabilities {
+    private static PlayerCapabilitiesRegisterData[] toInitPlayerCapibilities = {
+        new PlayerCapabilitiesRegisterData(
+            PlayerLevelProvider.class, "properties_cof_pl_lvl", PlayerLevelProvider.PLAYER_LEVEL
+        ),
+        new PlayerCapabilitiesRegisterData(
+            PlayerSkillsProvider.class, "properties_cof_pl_xp", PlayerSkillsProvider.PLAYER_SKILLS
+        ),
+        new PlayerCapabilitiesRegisterData(
+            PlayerXpProvider.class, "properties_cof_pl_skills", PlayerXpProvider.PLAYER_XP
+        ),
+    };
+
     @SubscribeEvent
     public static void onPlayerJoinWorld(EntityJoinLevelEvent event) {
         if(!event.getLevel().isClientSide()) {
@@ -43,41 +59,48 @@ public class InitCapabilities {
     @SubscribeEvent
     public static void onAttachCapabilites(AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof Player) {
-            if(!event.getObject().getCapability(PlayerLevelProvider.PLAYER_LEVEL).isPresent()) {
-                event.addCapability(
-                    new ResourceLocation(CoFMod.MOD_ID, "properties_cof_pl_lvl"), new PlayerLevelProvider()
-                );
-            };
-            if(!event.getObject().getCapability(PlayerXpProvider.PLAYER_XP).isPresent()) {
-                event.addCapability(
-                    new ResourceLocation(CoFMod.MOD_ID, "properties_cof_pl_xp"), new PlayerXpProvider()
-                );
+            for(int i = 0; i < toInitPlayerCapibilities.length; i++) {
+                PlayerCapabilitiesRegisterData data = toInitPlayerCapibilities[i];
+                if(!event.getObject().getCapability(data.capability).isPresent()) {
+                    try {
+                        ICapabilityProvider provider = data.provider.getDeclaredConstructor().newInstance();
+                        event.addCapability(
+                            new ResourceLocation(CoFMod.MOD_ID, data.resourceName),
+                            provider
+                        );
+                    } catch(Exception e) {
+                        CoFMod.LOGGER.error("Cannot create provider instance for capability", e);
+                    };
+                };
             };
         };
     };
 
+    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if(event.isWasDeath()) {
             event.getOriginal().reviveCaps();
-            event.getOriginal().getCapability(PlayerLevelProvider.PLAYER_LEVEL).ifPresent(
-                oldState -> {
-                    event.getEntity().getCapability(PlayerLevelProvider.PLAYER_LEVEL).ifPresent(
-                        newState -> {
-                            newState.copyFrom(oldState);
-                        }
-                    );
-                }
-            );
-            event.getOriginal().getCapability(PlayerXpProvider.PLAYER_XP).ifPresent(
-                oldState -> {
-                    event.getEntity().getCapability(PlayerXpProvider.PLAYER_XP).ifPresent(
-                        newState -> {
-                            newState.copyFrom(oldState);
-                        }
-                    );
-                }
-            );
+            for(int i = 0; i < toInitPlayerCapibilities.length; i++) {
+                PlayerCapabilitiesRegisterData data = toInitPlayerCapibilities[i];
+                event.getOriginal().getCapability(data.capability).ifPresent(
+                    oldState -> {
+                        event.getEntity().getCapability(data.capability).ifPresent(
+                            newState -> {
+                                if (newState instanceof ICapabilityCopyable<?> copyableNewState) {
+                                    try {
+                                        ((ICapabilityCopyable<Object>) copyableNewState).copyFrom(oldState);
+                                    } catch (ClassCastException e) {
+                                        CoFMod.LOGGER.warn("Cannot copy state: incompatible types for capability " + data.capability, e);
+                                    }
+                                } else {
+                                    CoFMod.LOGGER.warn("newState does not implement ICapabilityCopyable for capability " + data.capability);
+                                }
+                            }
+                        );
+                    }
+                );
+            };
         };
     };
 };
