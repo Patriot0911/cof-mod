@@ -1,4 +1,4 @@
-package com.modding.cof.capabilities.playerXP;
+package com.modding.cof.capabilities.playerPoints;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,39 +12,38 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class PlayerXpProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-    public static Capability<PlayerXp> PLAYER_XP = CapabilityManager.get(
-        new CapabilityToken<PlayerXp>() {}
+public class PlayerPointsProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
+    public static Capability<PlayerPoints> PLAYER_SKILL_POINTS = CapabilityManager.get(
+        new CapabilityToken<PlayerPoints>() {}
     );
 
-    private PlayerXp xp = null;
-    private final LazyOptional<PlayerXp> optional = LazyOptional.of(this::initPlayerLevel);
+    private PlayerPoints skills = null;
+    private final LazyOptional<PlayerPoints> optional = LazyOptional.of(this::initPlayerPoints);
 
-    private PlayerXp initPlayerLevel() {
-        if(this.xp == null) {
-            this.xp = new PlayerXp();
+    private PlayerPoints initPlayerPoints() {
+        if(this.skills == null) {
+            this.skills = new PlayerPoints();
         };
-        return this.xp;
+        return this.skills;
     };
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        initPlayerLevel().saveNBTData(nbt);
+        initPlayerPoints().saveNBTData(nbt);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        initPlayerLevel().loadNBTData(nbt);
+        initPlayerPoints().loadNBTData(nbt);
     };
 
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == PLAYER_XP) {
+        if(cap == PLAYER_SKILL_POINTS) {
             return optional.cast();
         };
         return LazyOptional.empty();
     };
-
 }

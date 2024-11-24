@@ -21,6 +21,7 @@ public class ModEvents {
                     int curXP = xp.add(changeAmount, player);
                     player.sendSystemMessage(Component.literal("Xp gained: " + changeAmount));
                     player.sendSystemMessage(Component.literal("Cur xp: " + curXP));
+                    player.sendSystemMessage(Component.literal("Total xp: " + xp.getTotalXp()));
                 }
             );
         };

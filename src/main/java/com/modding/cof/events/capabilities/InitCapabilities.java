@@ -3,6 +3,7 @@ package com.modding.cof.events.capabilities;
 import com.modding.cof.CoFMod;
 import com.modding.cof.capabilities.PlayerCapabilitiesRegisterData;
 import com.modding.cof.capabilities.level.PlayerLevelProvider;
+import com.modding.cof.capabilities.playerPoints.PlayerPointsProvider;
 import com.modding.cof.capabilities.playerSkills.PlayerSkillsProvider;
 import com.modding.cof.capabilities.playerXP.PlayerXpProvider;
 import com.modding.cof.interfaces.ICapabilityPlayerState;
@@ -31,6 +32,9 @@ public class InitCapabilities {
         ),
         new PlayerCapabilitiesRegisterData(
             PlayerXpProvider.class, "properties_cof_pl_skills", PlayerXpProvider.PLAYER_XP
+        ),
+        new PlayerCapabilitiesRegisterData(
+            PlayerPointsProvider.class, "properties_cof_pl_skill_points", PlayerPointsProvider.PLAYER_SKILL_POINTS
         ),
     };
 

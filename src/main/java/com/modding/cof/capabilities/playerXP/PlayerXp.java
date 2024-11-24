@@ -10,9 +10,14 @@ import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 @AutoRegisterCapability
 public class PlayerXp implements ICapabilityPlayerState<PlayerXp> {
     private int xp;
+    private int totalXp;
 
     public int get() {
-        return xp;
+        return this.xp;
+    };
+
+    public int getTotalXp() {
+        return this.totalXp;
     };
 
     /*
@@ -29,6 +34,7 @@ public class PlayerXp implements ICapabilityPlayerState<PlayerXp> {
                     newXp -= lvl.xpForNextLvl(startLvl+changeLvl);
                     ++changeLvl;
                 };
+                this.totalXp += count;
                 this.xp = newXp;
                 if(changeLvl != 0) {
                     lvl.addLevel(changeLvl);
@@ -42,13 +48,16 @@ public class PlayerXp implements ICapabilityPlayerState<PlayerXp> {
 
     public void copyFrom(PlayerXp source) {
         this.xp = source.xp;
+        this.totalXp = source.totalXp;
     };
 
     public void saveNBTData(CompoundTag nTag) {
-        nTag.putInt("pl_level", xp);
+        nTag.putInt("pl_xp", this.xp);
+        nTag.putInt("pl_total_xp", this.totalXp);
     };
 
     public void loadNBTData(CompoundTag nTag) {
-        xp = nTag.getInt("pl_level");
+        this.xp = nTag.getInt("pl_xp");
+        this.totalXp = nTag.getInt("pl_total_xp");
     };
 };
