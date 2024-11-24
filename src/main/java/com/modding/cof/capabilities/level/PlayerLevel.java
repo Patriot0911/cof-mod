@@ -1,12 +1,12 @@
 package com.modding.cof.capabilities.level;
 
-import com.modding.cof.interfaces.ICapabilityCopyable;
+import com.modding.cof.interfaces.ICapabilityPlayerState;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
 @AutoRegisterCapability
-public class PlayerLevel implements ICapabilityCopyable<PlayerLevel> {
+public class PlayerLevel implements ICapabilityPlayerState<PlayerLevel> {
     private int level;
     private final int MAX_LEVEL = 1000;
 

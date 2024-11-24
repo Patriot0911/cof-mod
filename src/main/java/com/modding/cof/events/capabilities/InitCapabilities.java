@@ -5,7 +5,7 @@ import com.modding.cof.capabilities.PlayerCapabilitiesRegisterData;
 import com.modding.cof.capabilities.level.PlayerLevelProvider;
 import com.modding.cof.capabilities.playerSkills.PlayerSkillsProvider;
 import com.modding.cof.capabilities.playerXP.PlayerXpProvider;
-import com.modding.cof.interfaces.ICapabilityCopyable;
+import com.modding.cof.interfaces.ICapabilityPlayerState;
 import com.modding.cof.network.NetworkManager;
 import com.modding.cof.network.packet.PlayerLevelSyncS2CPacket;
 
@@ -87,9 +87,9 @@ public class InitCapabilities {
                     oldState -> {
                         event.getEntity().getCapability(data.capability).ifPresent(
                             newState -> {
-                                if (newState instanceof ICapabilityCopyable<?> copyableNewState) {
+                                if (newState instanceof ICapabilityPlayerState<?> copyableNewState) {
                                     try {
-                                        ((ICapabilityCopyable<Object>) copyableNewState).copyFrom(oldState);
+                                        ((ICapabilityPlayerState<Object>) copyableNewState).copyFrom(oldState);
                                     } catch (ClassCastException e) {
                                         CoFMod.LOGGER.warn("Cannot copy state: incompatible types for capability " + data.capability, e);
                                     }

@@ -3,13 +3,13 @@ package com.modding.cof.capabilities.playerSkills;
 import java.util.Map;
 
 import com.modding.cof.client.data.subClasses.ClientLocalSkill;
-import com.modding.cof.interfaces.ICapabilityCopyable;
+import com.modding.cof.interfaces.ICapabilityPlayerState;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
 @AutoRegisterCapability
-public class PlayerSkills implements ICapabilityCopyable<PlayerSkills> {
+public class PlayerSkills implements ICapabilityPlayerState<PlayerSkills> {
     private Map<String, ClientLocalSkill> skills;
 
     public Map<String, ClientLocalSkill> getSkills() {
