@@ -3,6 +3,7 @@ package com.modding.cof;
 import org.slf4j.Logger;
 
 import com.modding.cof.item.Items;
+import com.modding.cof.modEvents.construction.ModEventBus;
 import com.modding.cof.network.NetworkManager;
 import com.mojang.logging.LogUtils;
 
@@ -27,6 +28,7 @@ public class CoFMod
 
     public CoFMod()
     {
+        ModEventBus.registerAll();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
 
