@@ -1,3 +1,9 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+}
+
 plugins {
     id 'eclipse'
     id 'idea'
@@ -6,6 +12,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
+
 version = mod_version
 group = mod_group_id
 
@@ -13,10 +21,7 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-tasks.build.dependsOn shadowJar
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -32,7 +37,6 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
@@ -43,7 +47,7 @@ minecraft {
         }
 
         client {
-            workingDirectory project.file('run')
+            // workingDirectory project.file('run')
             property 'forge.enabledGameTestNamespaces', mod_id
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
@@ -75,98 +79,32 @@ minecraft {
 }
 
 configurations {
-    shadow
-    library
-    shadow.extendsFrom library
-    implementation.extendsFrom library
-}
-
-reobf {
-    shadowJar {
-        // empty
-    }
+    shade
+    implementation.extendsFrom shade
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     mavenCentral()
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
 }
 
 dependencies {
-    // Specify the version of Minecraft to use.
-    // Any artifact can be supplied so long as it has a "userdev" classifier artifact and is a compatible patcher artifact.
-    // The "userdev" classifier will be requested and setup by ForgeGradle.
-    // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
-    // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    // implementation 'org.reflections:reflections:0.10.2'
-    // shadow 'org.reflections:reflections:0.10.2'
-    // implementation fg.deobf('org.reflections:reflections:0.10.2')
-    implementation 'org.reflections:reflections:0.10.2'
-    shadow 'org.reflections:reflections:0.10.2'
-    // Real mod deobf dependency examples - these get remapped to your current mappings
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
-    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
-
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    shade 'org.reflections:reflections:0.10.2'
 }
 
 shadowJar {
     archiveClassifier.set("")
-    configurations = [project.configurations.library]
-
-    manifest {
-        attributes([
-                'Specification-Title'     : mod_id,
-                'Specification-Vendor'    : mod_authors,
-                'Specification-Version'   : '1', // We are version 1 of ourselves
-                'Implementation-Title'    : project.name,
-                'Implementation-Version'  : project.jar.archiveVersion,
-                'Implementation-Vendor'   : mod_authors,
-                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-
-    def rlTarget = "${project.group}.relocated"
-
-    // relocate 'org.reflections', "${rlTarget}.org.reflections"
-    // relocate 'org.reflections', "${rlTarget}.org.reflections"
-
-
-    afterEvaluate {
-        finalizedBy reobfShadowJar
-    }
+	configurations = [project.configurations.shade]
+    finalizedBy 'reobfShadowJar'
 }
 
-shadowJar.doFirst {
-    println "Running shadowJar task"
-}
+// tasks.test {
+//     useJUnitPlatform()
+// }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
-// This block of code expands all declared replace properties in the specified resource targets.
-// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
-// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
-// See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [
             minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
@@ -182,9 +120,9 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
 tasks.named('jar', Jar).configure {
-    archiveClassifier = 'slim'
+    // archiveClassifier.set("")
+    archiveClassifier.set("slim")
     manifest {
         attributes([
                 'Specification-Title'     : mod_id,
@@ -197,18 +135,14 @@ tasks.named('jar', Jar).configure {
         ])
     }
 
-    // This is the preferred method to reobfuscate your jar file
-    finalizedBy 'reobfJar'
 }
 
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing:
-// tasks.named('publish').configure {
-//     dependsOn 'reobfJar'
-// }
+assemble.dependsOn shadowJar
+
+jar.finalizedBy('reobfShadowJar')
 
 reobf {
-    jar { classpath.from(sourceSets.main.compileClasspath) }
-    shadowJar {}
+    shadowJar { }
 }
 
 publishing {
@@ -225,5 +159,5 @@ publishing {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }

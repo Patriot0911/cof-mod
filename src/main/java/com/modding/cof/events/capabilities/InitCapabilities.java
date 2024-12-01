@@ -49,6 +49,12 @@ public class InitCapabilities {
                         );
                     }
                 );
+                // player.getCapability(PlayerLevelProvider.PLAYER_LEVEL).ifPresent(
+                //     level -> {
+                //         System.out.println("Player level found: " + level.getLevel());
+                //         // NetworkManager.sendToPlayer(new PlayerLevelSyncS2CPacket(level.getLevel()), player);
+                //     }
+                // );
                 // player.getCapability(PlayerXpProvider.PLAYER_XP).ifPresent(
                 //     xp -> {
                 //         NetworkManager.sendToPlayer(
@@ -60,6 +66,7 @@ public class InitCapabilities {
         };
     };
 
+    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public static void onAttachCapabilites(AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof Player) {

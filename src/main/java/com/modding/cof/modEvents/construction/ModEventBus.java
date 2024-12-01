@@ -22,17 +22,16 @@ public class ModEventBus {
         //     }
         // }
         Reflections reflections = new Reflections("com.modding.cof");
-        // Set<Method> methods = reflections.getMethodsAnnotatedWith(ModEventHandler.class);
-        // .getTypesAnnotatedWith(EventContainer.class);
+        Set<Method> methods = reflections.getMethodsAnnotatedWith(ModEventHandler.class);
 
-        // for (Method method : methods) {
-        //     try {
-        //         System.out.println(method.getParameterAnnotations());
-        //         // register(method);
-        //     } catch (Exception e) {
-        //         e.printStackTrace();
-        //     }
-        // }
+        for (Method method : methods) {
+            try {
+                System.out.println(method.getParameterAnnotations());
+                // register(method);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     };
 
     private static class EventHandler {

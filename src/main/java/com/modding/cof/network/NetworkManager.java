@@ -10,7 +10,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class NetworkManager {
-    private static SimpleChannel INSTANCE;
+    private static SimpleChannel CHANNEL_INSTANCE;
 
     private static int packetId = 0;
     private static int getNextId() {
@@ -24,7 +24,7 @@ public class NetworkManager {
             .clientAcceptedVersions(s -> true)
             .serverAcceptedVersions(s -> true)
             .simpleChannel();
-        INSTANCE = net;
+        CHANNEL_INSTANCE = net;
 
         net.messageBuilder(PlayerLevelSyncS2CPacket.class, getNextId(), NetworkDirection.PLAY_TO_CLIENT)
             .decoder(PlayerLevelSyncS2CPacket::new)
@@ -39,10 +39,14 @@ public class NetworkManager {
     };
 
     public static <MSG> void sendToServer(MSG message) {
-        INSTANCE.sendToServer(message);
+        if(CHANNEL_INSTANCE == null)
+            return;
+        CHANNEL_INSTANCE.sendToServer(message);
     };
 
     public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
-        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+        if(CHANNEL_INSTANCE == null)
+            return;
+        CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
     };
 };
