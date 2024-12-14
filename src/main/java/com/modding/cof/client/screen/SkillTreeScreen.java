@@ -1,8 +1,5 @@
 package com.modding.cof.client.screen;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,21 +9,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec2;
 
 public class SkillTreeScreen extends Screen {
     public final int windowPadding = 3;
     public final int BACKGROUND_SIZE = 2048;
     public final float minScrollX = 0, minScrollY = 0;
 
-    private List<SkillButton> skillButtons = new ArrayList<>();
+    private SkillBranch skillBranch;
 
-    // Window sizes
-    private static final ResourceLocation BACKGROUND_TEXTURE =
-        new ResourceLocation("cof", "textures/gui/skill_tree_background.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("cof",
+            "textures/gui/skill_tree_background.png");
     public int window_startX, window_startY;
     public int screenWidth, screenHeight;
 
-    // map sizing
     public float scrollX = 0, scrollY = 0;
     private boolean dragging = false;
     private float zoomLevel = 1.0f;
@@ -41,28 +37,29 @@ public class SkillTreeScreen extends Screen {
     @Override
     public void init() {
         clearWidgets();
-        skillButtons.clear();
+
         this.screenWidth = 4 * this.width / 5;
         this.screenHeight = 4 * this.height / 5;
-        addSkillButtons();
+
+        int centerX = this.width / 2;
+        int centerY = this.height / 2;
+        int buttonSize = 20;
+        Vec2 direction = new Vec2(1, 0);
+
+        skillBranch = new SkillBranch(this, centerX, centerY, buttonSize, direction);
+        skillBranch.addButtonsToScreen();
     }
 
     @Override
     public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         renderBackgroundTexture(poseStack);
-
-        int bgLeft = (this.width - BACKGROUND_SIZE) / 2;
-        int bgTop = (this.height - BACKGROUND_SIZE) / 2;
-        poseStack.pushPose();
-        poseStack.translate(bgLeft, bgTop, 0);
-        poseStack.popPose();
-
+        skillBranch.render(poseStack, mouseX, mouseY, partialTick);
         super.render(poseStack, mouseX, mouseY, partialTick);
-        if(this.toolTip != null) {
-            // test version
+    
+        if (this.toolTip != null) {
             this.renderTooltip(poseStack, Component.literal(toolTip), mouseX, mouseY);
             this.toolTip = null;
-        };
+        }
     }
 
     private void renderBackgroundTexture(PoseStack poseStack) {
@@ -100,8 +97,10 @@ public class SkillTreeScreen extends Screen {
             scrollY -= deltaY;
 
             // // Запобігаємо виходу за межі мапи
-            // scrollX = Mth.clamp(scrollX, -(int)((-BACKGROUND_SIZE + screenWidth)*1.5), 0);
-            // scrollY = Mth.clamp(scrollY, (int)((-BACKGROUND_SIZE + screenHeight)*1.5), 0);
+            // scrollX = Mth.clamp(scrollX, -(int)((-BACKGROUND_SIZE + screenWidth)*1.5),
+            // 0);
+            // scrollY = Mth.clamp(scrollY, (int)((-BACKGROUND_SIZE + screenHeight)*1.5),
+            // 0);
             return true;
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
@@ -117,36 +116,15 @@ public class SkillTreeScreen extends Screen {
         return true;
     }
 
+    public void addWidgetButton(SkillButton button) {
+        this.addRenderableWidget(button);
+    }
 
     public static int doneSkills = 1;
 
-    private void addSkillButtons() {
-        int buttonSize = 20;
-        int centerX = this.width / 2;
-        int centerY = this.height / 2;
-
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < doneSkills; j++) {
-                if(i+j > doneSkills) {
-                    break;
-                };
-                int x = centerX + (i - 2) * 40 - buttonSize / 2;
-                int y = centerY + (j - 2) * 40 - buttonSize / 2;
-                SkillButton skillButton = new SkillButton(x, y, buttonSize, buttonSize, Component.literal("Skill"), this);
-                skillButtons.add(skillButton);
-                addRenderableWidget(skillButton);
-            }
-        }
-    }
     public void addSkill() {
-        int buttonSize = 20;
-        int centerX = this.width / 2;
-        int centerY = this.height / 2;
         ++doneSkills;
-        int x = centerX + ((int) (doneSkills/5) - 2) * 40 - buttonSize / 2;
-        int y = centerY + ((int) (doneSkills%5) - 2) * 40 - buttonSize / 2;
-        SkillButton skillButton = new SkillButton(x, y, buttonSize, buttonSize, Component.literal("Skill"), this);
-        skillButtons.add(skillButton);
-        addRenderableWidget(skillButton);
+        SkillButton button = skillBranch.addButton();
+        addRenderableWidget(button);
     }
 }
