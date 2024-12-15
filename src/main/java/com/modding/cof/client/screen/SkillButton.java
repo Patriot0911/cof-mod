@@ -9,37 +9,38 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkillButton extends Button {
+    private final SkillBranch parentBranch;
     private static final ResourceLocation ICON_TEXTURE = new ResourceLocation("cof", "textures/gui/skill_icon.jpg");
-    private SkillTreeScreen parentScreen;
     private int startX;
     private int startY;
 
-    public SkillButton(int x, int y, int width, int height, Component message, SkillTreeScreen screen) {
+    public SkillButton(int x, int y, int width, int height, Component message, SkillBranch branch) {
         super(x, y, width, height, message, button -> {
-            System.out.println("Skill button clicked!");
+            //System.out.println("Skill button clicked!");
         });
+        this.parentBranch = branch;
         this.startX = x;
         this.startY = y;
-        this.parentScreen = screen;
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY) {
+        System.out.println("Skill button clicked!");
+        SkillTreeScreen screen = parentBranch.getScreen();
+        screen.addSkill(parentBranch);
+        super.onClick(mouseX, mouseY);
     }
 
     public int[] getCords() {
-        // i hate java
-        int[] cords = { startX, startY };
-        return cords;
+        return new int[] { this.startX, this.startY };
     }
 
-    @Override
-    public void onClick(double p_93371_, double p_93372_) {
-        // ++parentScreen.doneSkills;
-        parentScreen.addSkill();
-        super.onClick(p_93371_, p_93372_);
-    }
-
-    @Override
+        @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         boolean isHovered = isHoveredOrFocused();
+
+        SkillTreeScreen parentScreen = parentBranch.getScreen();
 
         x = (int) (startX - parentScreen.scrollX);
         y = (int) (startY - parentScreen.scrollY);
@@ -84,3 +85,4 @@ public class SkillButton extends Button {
         mc.font.draw(poseStack, tooltipText, tooltipX + 3, tooltipY + 3, 0xFFFFFF);
     }
 }
+

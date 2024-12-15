@@ -26,7 +26,7 @@ public class PointButton extends Button {
     @Override
     public void onClick(double p_93371_, double p_93372_) {
         // ++parentScreen.doneSkills;
-        parentScreen.addSkill();
+        // parentScreen.addSkill();
         super.onClick(p_93371_, p_93372_);
     }
 

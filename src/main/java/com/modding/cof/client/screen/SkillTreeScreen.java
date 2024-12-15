@@ -55,14 +55,16 @@ public class SkillTreeScreen extends Screen {
         Vec2[] directions = { 
             new Vec2(1, 0), 
             new Vec2(sin60, sin30), 
-            new Vec2((-1 * sin60), sin30), 
+            new Vec2(-sin60, sin30), 
             new Vec2(-1, 0),
-            new Vec2((-1 * sin60), -1 * sin30),
-            new Vec2(sin60, -1 * sin30) 
+            new Vec2(-sin60, -sin30),
+            new Vec2(sin60, -sin30) 
         };
 
         for (Vec2 direction : directions) {
-            skillBranchList.add(new SkillBranch(this, centerX, centerY, buttonSize, direction, branchSize));
+            SkillBranch branch = new SkillBranch(this, centerX, centerY, buttonSize, direction, branchSize);
+            skillBranchList.add(branch);
+            branch.addButtonsToScreen();
         }
     }
 
@@ -138,11 +140,10 @@ public class SkillTreeScreen extends Screen {
         this.addRenderableWidget(button);
     }
 
-    public static int doneSkills = 1;
-
-    public void addSkill() {
-        ++doneSkills;
-        // SkillButton button = skillBranch.addButton();
-        // addRenderableWidget(button);
+    public void addSkill(SkillBranch branch) {
+        SkillButton newButton = branch.addButton();
+        if (newButton != null) {
+            addRenderableWidget(newButton);
+        }
     }
 }
