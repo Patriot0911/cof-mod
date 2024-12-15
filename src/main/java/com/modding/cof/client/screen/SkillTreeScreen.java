@@ -53,12 +53,12 @@ public class SkillTreeScreen extends Screen {
         float sin30 = (float) Math.sin(Math.PI / 6);
 
         Vec2[] directions = { 
-            new Vec2(1, 0), 
-            new Vec2(sin60, sin30), 
-            new Vec2(-sin60, sin30), 
-            new Vec2(-1, 0),
+            new Vec2(sin60, sin30),
+            new Vec2(0, 1),
+            new Vec2(-sin60, sin30),
             new Vec2(-sin60, -sin30),
-            new Vec2(sin60, -sin30) 
+            new Vec2(0, -1),
+            new Vec2(sin60, -sin30)
         };
 
         for (Vec2 direction : directions) {
