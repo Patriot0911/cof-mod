@@ -23,6 +23,12 @@ public class SkillButton extends Button {
         this.parentScreen = screen;
     }
 
+    public int[] getCords() {
+        // i hate java
+        int[] cords = { startX, startY };
+        return cords;
+    }
+
     @Override
     public void onClick(double p_93371_, double p_93372_) {
         // ++parentScreen.doneSkills;
@@ -35,18 +41,17 @@ public class SkillButton extends Button {
         Minecraft mc = Minecraft.getInstance();
         boolean isHovered = isHoveredOrFocused();
 
-        x = (int) (startX-parentScreen.scrollX);
-        y = (int) (startY-parentScreen.scrollY);
+        x = (int) (startX - parentScreen.scrollX);
+        y = (int) (startY - parentScreen.scrollY);
 
-        float paddingTop = (float) (parentScreen.screenHeight*0.0349744686);
-        float paddingLeft = (float) (parentScreen.screenWidth*0.0170898438);
+        float paddingTop = (float) (parentScreen.screenHeight * 0.0349744686);
+        float paddingLeft = (float) (parentScreen.screenWidth * 0.0170898438);
 
         RenderSystem.enableScissor(
-            (int) ((parentScreen.window_startX+paddingLeft)*mc.getWindow().getGuiScale()),
-            (int) ((parentScreen.window_startY+paddingTop)*mc.getWindow().getGuiScale()),
-            (int) ((parentScreen.screenWidth-paddingLeft*2)*mc.getWindow().getGuiScale()),
-            (int) ((parentScreen.screenHeight-paddingTop*2)*mc.getWindow().getGuiScale())
-        );
+                (int) ((parentScreen.window_startX + paddingLeft) * mc.getWindow().getGuiScale()),
+                (int) ((parentScreen.window_startY + paddingTop) * mc.getWindow().getGuiScale()),
+                (int) ((parentScreen.screenWidth - paddingLeft * 2) * mc.getWindow().getGuiScale()),
+                (int) ((parentScreen.screenHeight - paddingTop * 2) * mc.getWindow().getGuiScale()));
         fill(poseStack, x, y, x + width, y + height, isHovered ? 0xA0000000 : 0x80000000);
 
         RenderSystem.setShaderTexture(0, ICON_TEXTURE);
@@ -56,7 +61,8 @@ public class SkillButton extends Button {
         poseStack.popPose();
         if (isHovered) {
             parentScreen.toolTip = "This is a tooltip";
-            // .renderTooltip(poseStack, Component.literal("This is a tooltip"), mouseX, mouseY);
+            // .renderTooltip(poseStack, Component.literal("This is a tooltip"), mouseX,
+            // mouseY);
             // renderTooltip(poseStack, mouseX, mouseY);
             drawCenteredString(poseStack, mc.font, getMessage(), x + width / 2, y + (height - 8) / 2, 0xFFFFFF);
         }

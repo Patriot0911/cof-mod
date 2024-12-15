@@ -1,5 +1,8 @@
 package com.modding.cof.client.screen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -16,7 +19,7 @@ public class SkillTreeScreen extends Screen {
     public final int BACKGROUND_SIZE = 2048;
     public final float minScrollX = 0, minScrollY = 0;
 
-    private SkillBranch skillBranch;
+    private List<SkillBranch> skillBranchList = new ArrayList<>();
 
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("cof",
             "textures/gui/skill_tree_background.png");
@@ -44,16 +47,31 @@ public class SkillTreeScreen extends Screen {
         int centerX = this.width / 2;
         int centerY = this.height / 2;
         int buttonSize = 20;
-        Vec2 direction = new Vec2(1, 0);
+        int branchSize = 5;
 
-        skillBranch = new SkillBranch(this, centerX, centerY, buttonSize, direction);
-        skillBranch.addButtonsToScreen();
+        float sin60 = (float) Math.sin(Math.PI / 3);
+        float sin30 = (float) Math.sin(Math.PI / 6);
+
+        Vec2[] directions = { 
+            new Vec2(1, 0), 
+            new Vec2(sin60, sin30), 
+            new Vec2((-1 * sin60), sin30), 
+            new Vec2(-1, 0),
+            new Vec2((-1 * sin60), -1 * sin30),
+            new Vec2(sin60, -1 * sin30) 
+        };
+
+        for (Vec2 direction : directions) {
+            skillBranchList.add(new SkillBranch(this, centerX, centerY, buttonSize, direction, branchSize));
+        }
     }
 
     @Override
     public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         renderBackgroundTexture(poseStack);
-        skillBranch.render(poseStack, mouseX, mouseY, partialTick);
+        for (SkillBranch skillBranch : skillBranchList) {
+            skillBranch.render(poseStack, mouseX, mouseY, partialTick);
+        }
         super.render(poseStack, mouseX, mouseY, partialTick);
     
         if (this.toolTip != null) {
@@ -124,7 +142,7 @@ public class SkillTreeScreen extends Screen {
 
     public void addSkill() {
         ++doneSkills;
-        SkillButton button = skillBranch.addButton();
-        addRenderableWidget(button);
+        // SkillButton button = skillBranch.addButton();
+        // addRenderableWidget(button);
     }
 }
