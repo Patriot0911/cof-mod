@@ -3,6 +3,7 @@ package com.modding.cof;
 import org.slf4j.Logger;
 
 import com.modding.cof.item.Items;
+import com.modding.cof.item.custom_items_recipes.SmithPotionBrewingRecipe;
 import com.modding.cof.modEvents.construction.ModEventBus;
 import com.modding.cof.network.NetworkManager;
 import com.mojang.logging.LogUtils;
@@ -10,6 +11,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -43,6 +45,15 @@ public class CoFMod
         NetworkManager.register();
         LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+    
+        event.enqueueWork(() -> {
+            setupBrewingRecipes();
+            LOGGER.info("Brewing recipes registered!");
+        });
+    }
+
+    public static void setupBrewingRecipes() {
+        BrewingRecipeRegistry.addRecipe(new SmithPotionBrewingRecipe());
     }
 
     @SubscribeEvent
