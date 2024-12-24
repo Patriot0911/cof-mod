@@ -21,6 +21,7 @@ build
 eclipse
 .vscode
 run
+logs
 
 # Files from Forge MDK
 forge*changelog.txt
