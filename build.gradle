@@ -96,9 +96,6 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testImplementation 'org.mockito:mockito-core:5.5.0'
-    // implementation fg.deobf('org.reflections:reflections')
-    minecraftLibrary 'org.reflections:reflections'
-    shade 'org.reflections:reflections:0.10.2'
 }
 
 shadowJar {
