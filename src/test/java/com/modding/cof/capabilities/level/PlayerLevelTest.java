@@ -26,10 +26,10 @@ class PlayerLevelTest {
 
     @Test
     void testAddLevel() {
-        int newLevel = playerLevel.addLevel(10);
+        int newLevel = playerLevel.addLevel(10, null);
         assertEquals(10, newLevel, "Level should be updated to 10");
 
-        newLevel = playerLevel.addLevel(995);
+        newLevel = playerLevel.addLevel(995, null);
         assertEquals(1000, newLevel, "Level should not exceed MAX_LEVEL (1000)");
     }
 
@@ -38,7 +38,7 @@ class PlayerLevelTest {
         int xpForNext = playerLevel.xpForNextLvl(-1);
         assertEquals(57, xpForNext, "XP for next level at level 0 should be 57");
 
-        playerLevel.addLevel(10);
+        playerLevel.addLevel(10, null);
         xpForNext = playerLevel.xpForNextLvl(-1);
         assertEquals(377, xpForNext, "XP for next level at level 10 should be 377");
 
@@ -49,7 +49,7 @@ class PlayerLevelTest {
     @Test
     void testCopyFrom() {
         PlayerLevel source = new PlayerLevel();
-        source.addLevel(50);
+        source.addLevel(50, null);
 
         playerLevel.copyFrom(source);
         assertEquals(50, playerLevel.getLevel(), "Level should be copied from source");
@@ -59,7 +59,7 @@ class PlayerLevelTest {
     void testSaveNBTData() {
         CompoundTag mockTag = mock(CompoundTag.class);
 
-        playerLevel.addLevel(25);
+        playerLevel.addLevel(25, null);
         playerLevel.saveNBTData(mockTag);
 
         verify(mockTag).putInt("pl_level", 25);

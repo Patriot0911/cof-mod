@@ -1,8 +1,12 @@
 package com.modding.cof.capabilities.level;
 
 import com.modding.cof.interfaces.ICapabilityPlayerState;
+import com.modding.cof.modEvents.LevelUpEvent;
+import com.modding.cof.modEvents.construction.ModEventBus;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
 @AutoRegisterCapability
@@ -14,10 +18,11 @@ public class PlayerLevel implements ICapabilityPlayerState<PlayerLevel> {
         return level;
     };
 
-    public int addLevel(int count) {
+    public int addLevel(int count, Player player) {
         this.level = Math.min(level + count, MAX_LEVEL);
-        System.out.println("newLvl: " +this.level);
-        // call event
+        System.out.println("newLvl: " + this.level);
+        LevelUpEvent event = new LevelUpEvent(count, (ServerPlayer) player);
+        ModEventBus.emit(event);
         return level;
     };
 

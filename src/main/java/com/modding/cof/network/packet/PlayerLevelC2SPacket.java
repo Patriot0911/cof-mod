@@ -27,7 +27,7 @@ public class PlayerLevelC2SPacket { // rename to smthg like "learn skill"
             player.getCapability(PlayerLevelProvider.PLAYER_LEVEL).ifPresent(
                 level -> {
                     /// serverside. code is not valid
-                    level.addLevel(1);
+                    level.addLevel(1, player);
                     player.sendSystemMessage(Component.literal(
                         "Level: " + level.getLevel()
                     ));

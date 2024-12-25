@@ -37,7 +37,7 @@ public class PlayerXp implements ICapabilityPlayerState<PlayerXp> {
                 this.totalXp += count;
                 this.xp = newXp;
                 if(changeLvl != 0) {
-                    lvl.addLevel(changeLvl);
+                    lvl.addLevel(changeLvl, player);
                 };
             }
         );
