@@ -7,8 +7,8 @@
 
 ## Демонстрація
 
-[![Watch the video](https://youtu.be/aiC4jXFIAx0)](https://youtu.be/aiC4jXFIAx0)
-[url=https://postimg.cc/K4WXGJYN][img]https://i.postimg.cc/K4WXGJYN/photo-2024-12-26-21-46-56.jpg[/img][/url]
-[url=https://postimg.cc/QHK2H19r][img]https://i.postimg.cc/QHK2H19r/photo-2024-12-26-21-47-02.jpg[/img][/url]
-[url=https://postimg.cc/xNcWGb6M][img]https://i.postimg.cc/xNcWGb6M/photo-2024-12-26-21-47-05.jpg[/img][/url]
-[url=https://postimg.cc/hhvWRHKv][img]https://i.postimg.cc/hhvWRHKv/photo-2024-12-26-21-47-08.jpg[/img][/url]
+https://youtu.be/aiC4jXFIAx0
+https://i.postimg.cc/K4WXGJYN/photo-2024-12-26-21-46-56.jpg
+https://i.postimg.cc/QHK2H19r/photo-2024-12-26-21-47-02.jpg
+https://i.postimg.cc/xNcWGb6M/photo-2024-12-26-21-47-05.jpg
+https://i.postimg.cc/hhvWRHKv/photo-2024-12-26-21-47-08.jpg
