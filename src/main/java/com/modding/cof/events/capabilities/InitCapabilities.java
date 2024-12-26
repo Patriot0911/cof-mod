@@ -9,6 +9,7 @@ import com.modding.cof.capabilities.playerXP.PlayerXpProvider;
 import com.modding.cof.interfaces.ICapabilityPlayerState;
 import com.modding.cof.network.NetworkManager;
 import com.modding.cof.network.packet.PlayerLevelSyncS2CPacket;
+import com.modding.cof.network.packet.skills.PlayerSkillsSyncS2CPacket;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,19 +50,13 @@ public class InitCapabilities {
                         );
                     }
                 );
-                // player.getCapability(PlayerLevelProvider.PLAYER_LEVEL).ifPresent(
-                //     level -> {
-                //         System.out.println("Player level found: " + level.getLevel());
-                //         // NetworkManager.sendToPlayer(new PlayerLevelSyncS2CPacket(level.getLevel()), player);
-                //     }
-                // );
-                // player.getCapability(PlayerXpProvider.PLAYER_XP).ifPresent(
-                //     xp -> {
-                //         NetworkManager.sendToPlayer(
-                //             new PlayerLevelSyncS2CPacket(xp.get()), player
-                //         );
-                //     }
-                // );
+                player.getCapability(PlayerSkillsProvider.PLAYER_SKILLS).ifPresent(
+                    skills -> {
+                        NetworkManager.sendToPlayer(
+                            new PlayerSkillsSyncS2CPacket(skills.getSkills()), player
+                        );
+                    }
+                );
             };
         };
     };

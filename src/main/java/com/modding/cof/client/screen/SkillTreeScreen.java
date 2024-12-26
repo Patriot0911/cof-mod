@@ -37,11 +37,22 @@ public class SkillTreeScreen extends Screen {
         Arrays.asList(
             new ArrayList<>(
                 Arrays.asList(
+                    new LvlUpHeal(),
                     new LvlUpHeal()
                 )
             ),
             new ArrayList<>(
                 Arrays.asList(
+                    new LvlUpHeal(),
+                    new LvlUpHeal(),
+                    new LvlUpHeal()
+                )
+            ),
+            new ArrayList<>(
+                Arrays.asList(
+                    new LvlUpHeal(),
+                    new LvlUpHeal(),
+                    new LvlUpHeal(),
                     new LvlUpHeal()
                 )
             ),
@@ -60,7 +71,7 @@ public class SkillTreeScreen extends Screen {
         this.minecraft = Minecraft.getInstance();
     }
 
-    public static List<Vec2> generateDirections(int bCount, float radius) {
+    public static List<Vec2> generateDirections(int bCount, float radius, int centerX, int centerY) {
         List<Vec2> directions = new ArrayList<>();
         double angleStep = 2 * Math.PI / bCount;
         for(int i = 0; i < bCount; i++) {
@@ -84,7 +95,7 @@ public class SkillTreeScreen extends Screen {
         int buttonSize = 20;
 
         float r = 1;
-        List<Vec2> directions = generateDirections(branches.size(), r);
+        List<Vec2> directions = generateDirections(branches.size(), r, centerX, centerY);
 
         for(int i = 0; i < branches.size(); i++) {
             Vec2 direction = directions.get(i);
@@ -170,14 +181,13 @@ public class SkillTreeScreen extends Screen {
         return true;
     }
 
-    public void addWidgetButton(SkillButton button) {
-        this.addRenderableWidget(button);
+    @Override
+    public void resize(Minecraft p_96575_, int p_96576_, int p_96577_) {
+        super.resize(p_96575_, p_96576_, p_96577_);
+        skillBranchList.clear();
     }
 
-    public void addSkill(SkillBranch branch) {
-        SkillButton newButton = branch.addButton();
-        if (newButton != null) {
-            addRenderableWidget(newButton);
-        }
+    public void addWidgetButton(SkillButton button) {
+        this.addRenderableWidget(button);
     }
 }

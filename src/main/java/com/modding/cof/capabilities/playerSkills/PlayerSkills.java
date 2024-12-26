@@ -1,5 +1,6 @@
 package com.modding.cof.capabilities.playerSkills;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.modding.cof.client.data.subClasses.ClientLocalSkill;
@@ -38,6 +39,8 @@ public class PlayerSkills implements ICapabilityPlayerState<PlayerSkills> {
     public void loadNBTData(CompoundTag nTag) {
         if(this.skills != null) {
             this.skills.clear();
+        } else {
+            this.skills = new HashMap<>();
         };
         if(nTag.contains("skills")) {
             CompoundTag mapTag = nTag.getCompound("skills");

@@ -1,6 +1,7 @@
 package com.modding.cof.network;
 
 import com.modding.cof.network.packet.PlayerLevelSyncS2CPacket;
+import com.modding.cof.network.packet.skills.PlayerSkillsSyncS2CPacket;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,11 +32,11 @@ public class NetworkManager {
             .encoder(PlayerLevelSyncS2CPacket::toBytes)
             .consumerMainThread(PlayerLevelSyncS2CPacket::handle)
             .add();
-        // net.messageBuilder(PlayerLevelSyncS2CPacket.class, getNextId(), NetworkDirection.PLAY_TO_CLIENT)
-        //     .decoder(PlayerLevelSyncS2CPacket::new)
-        //     .encoder(PlayerLevelSyncS2CPacket::toBytes)
-        //     .consumerMainThread(PlayerLevelSyncS2CPacket::handle)
-        //     .add();
+        net.messageBuilder(PlayerSkillsSyncS2CPacket.class, getNextId(), NetworkDirection.PLAY_TO_CLIENT)
+            .decoder(PlayerSkillsSyncS2CPacket::new)
+            .encoder(PlayerSkillsSyncS2CPacket::toBytes)
+            .consumerMainThread(PlayerSkillsSyncS2CPacket::handle)
+            .add();
     };
 
     public static <MSG> void sendToServer(MSG message) {
