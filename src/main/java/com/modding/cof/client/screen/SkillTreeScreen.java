@@ -1,10 +1,13 @@
 package com.modding.cof.client.screen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.modding.cof.skills.IBaseSkill;
+import com.modding.cof.skills.LvlUpHeal;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -30,12 +33,34 @@ public class SkillTreeScreen extends Screen {
     private boolean dragging = false;
     private float zoomLevel = 1.0f;
 
+    private List<List<IBaseSkill>> branches = new ArrayList<>(
+        Arrays.asList(
+            new ArrayList<>(
+                Arrays.asList(
+                    new LvlUpHeal()
+                )
+            )
+        )
+    );
+
     public String toolTip = "";
 
     public SkillTreeScreen(ResourceLocation skillTreeId) {
         super(Component.literal("Skill Tree"));
         this.minecraft = Minecraft.getInstance();
     }
+
+    public static List<Vec2> generateDirections(int bCount, float radius) {
+        List<Vec2> directions = new ArrayList<>();
+        double angleStep = 2 * Math.PI / bCount;
+        for(int i = 0; i < bCount; i++) {
+            double angle = i * angleStep;
+            float x = (float) (Math.cos(angle)) * radius;
+            float y = (float) (Math.sin(angle)) * radius;
+            directions.add(new Vec2(x, y));
+        };
+        return directions;
+    };
 
     @Override
     public void init() {
@@ -47,19 +72,10 @@ public class SkillTreeScreen extends Screen {
         int centerX = this.width / 2;
         int centerY = this.height / 2;
         int buttonSize = 20;
-        int branchSize = 5;
+        int branchSize = 4;
 
-        float sin60 = (float) Math.sin(Math.PI / 3);
-        float sin30 = (float) Math.sin(Math.PI / 6);
-
-        Vec2[] directions = { 
-            new Vec2(sin60, sin30),
-            new Vec2(0, 1),
-            new Vec2(-sin60, sin30),
-            new Vec2(-sin60, -sin30),
-            new Vec2(0, -1),
-            new Vec2(sin60, -sin30)
-        };
+        float r = 1;
+        List<Vec2> directions = generateDirections(branches.size(), r);
 
         for (Vec2 direction : directions) {
             SkillBranch branch = new SkillBranch(this, centerX, centerY, buttonSize, direction, branchSize);
@@ -75,7 +91,7 @@ public class SkillTreeScreen extends Screen {
             skillBranch.render(poseStack, mouseX, mouseY, partialTick);
         }
         super.render(poseStack, mouseX, mouseY, partialTick);
-    
+
         if (this.toolTip != null) {
             this.renderTooltip(poseStack, Component.literal(toolTip), mouseX, mouseY);
             this.toolTip = null;
