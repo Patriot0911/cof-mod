@@ -8,7 +8,7 @@
 ## Демонстрація
 
 https://youtu.be/aiC4jXFIAx0
-https://i.postimg.cc/K4WXGJYN/photo-2024-12-26-21-46-56.jpg
-https://i.postimg.cc/QHK2H19r/photo-2024-12-26-21-47-02.jpg
-https://i.postimg.cc/xNcWGb6M/photo-2024-12-26-21-47-05.jpg
-https://i.postimg.cc/hhvWRHKv/photo-2024-12-26-21-47-08.jpg
+https://i.postimg.cc/WbNs7yLQ/photo-2024-12-26-21-46-56.jpg
+https://i.postimg.cc/GhXdgjb9/photo-2024-12-26-21-47-02.jpg
+https://i.postimg.cc/8cHNSRWK/photo-2024-12-26-21-47-05.jpg
+https://i.postimg.cc/8kB1MS3R/photo-2024-12-26-21-47-08.jpg
