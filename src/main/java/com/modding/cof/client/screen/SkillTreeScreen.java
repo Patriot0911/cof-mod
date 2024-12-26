@@ -39,6 +39,16 @@ public class SkillTreeScreen extends Screen {
                 Arrays.asList(
                     new LvlUpHeal()
                 )
+            ),
+            new ArrayList<>(
+                Arrays.asList(
+                    new LvlUpHeal()
+                )
+            ),
+            new ArrayList<>(
+                Arrays.asList(
+                    new LvlUpHeal()
+                )
             )
         )
     );
@@ -72,16 +82,24 @@ public class SkillTreeScreen extends Screen {
         int centerX = this.width / 2;
         int centerY = this.height / 2;
         int buttonSize = 20;
-        int branchSize = 4;
 
         float r = 1;
         List<Vec2> directions = generateDirections(branches.size(), r);
 
-        for (Vec2 direction : directions) {
-            SkillBranch branch = new SkillBranch(this, centerX, centerY, buttonSize, direction, branchSize);
+        for(int i = 0; i < branches.size(); i++) {
+            Vec2 direction = directions.get(i);
+            List<IBaseSkill> branchSkills = branches.get(i);
+            SkillBranch branch = new SkillBranch(
+                this,
+                centerX,
+                centerY,
+                buttonSize,
+                direction,
+                branchSkills
+            );
             skillBranchList.add(branch);
             branch.addButtonsToScreen();
-        }
+        };
     }
 
     @Override
