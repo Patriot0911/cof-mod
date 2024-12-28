@@ -6,8 +6,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.modding.cof.skills.Armor;
+import com.modding.cof.skills.ArrowRestore;
 import com.modding.cof.skills.IBaseSkill;
 import com.modding.cof.skills.LvlUpHeal;
+import com.modding.cof.skills.Starvation;
+import com.modding.cof.skills.ToolsRepair;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -37,28 +41,27 @@ public class SkillTreeScreen extends Screen {
         Arrays.asList(
             new ArrayList<>(
                 Arrays.asList(
-                    new LvlUpHeal(),
-                    new LvlUpHeal()
-                )
-            ),
-            new ArrayList<>(
-                Arrays.asList(
-                    new LvlUpHeal(),
-                    new LvlUpHeal(),
-                    new LvlUpHeal()
-                )
-            ),
-            new ArrayList<>(
-                Arrays.asList(
-                    new LvlUpHeal(),
-                    new LvlUpHeal(),
-                    new LvlUpHeal(),
-                    new LvlUpHeal()
+                    new Starvation()
                 )
             ),
             new ArrayList<>(
                 Arrays.asList(
                     new LvlUpHeal()
+                )
+            ),
+            new ArrayList<>(
+                Arrays.asList(
+                    new ArrowRestore()
+                )
+            ),
+            new ArrayList<>(
+                Arrays.asList(
+                    new Armor()
+                )
+            ),
+            new ArrayList<>(
+                Arrays.asList(
+                    new ToolsRepair()
                 )
             )
         )
@@ -71,11 +74,11 @@ public class SkillTreeScreen extends Screen {
         this.minecraft = Minecraft.getInstance();
     }
 
-    public static List<Vec2> generateDirections(int bCount, float radius, int centerX, int centerY) {
+    public static List<Vec2> generateDirections(int bCount, float radius, int centerX, int centerY, double startAngle) {
         List<Vec2> directions = new ArrayList<>();
         double angleStep = 2 * Math.PI / bCount;
         for(int i = 0; i < bCount; i++) {
-            double angle = i * angleStep;
+            double angle = i * angleStep + startAngle;
             float x = (float) (Math.cos(angle)) * radius;
             float y = (float) (Math.sin(angle)) * radius;
             directions.add(new Vec2(x, y));
@@ -95,7 +98,7 @@ public class SkillTreeScreen extends Screen {
         int buttonSize = 20;
 
         float r = 1;
-        List<Vec2> directions = generateDirections(branches.size(), r, centerX, centerY);
+        List<Vec2> directions = generateDirections(branches.size(), r, centerX, centerY, 3*Math.PI/2);
 
         for(int i = 0; i < branches.size(); i++) {
             Vec2 direction = directions.get(i);

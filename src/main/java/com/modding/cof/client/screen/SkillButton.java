@@ -1,20 +1,16 @@
 package com.modding.cof.client.screen;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.modding.cof.client.data.ClientSkillsData;
-import com.modding.cof.client.data.subClasses.ClientLocalSkill;
+import com.modding.cof.CoFMod;
 import com.modding.cof.client.screen.SkillBranch.SkillGuiType;
+import com.modding.cof.network.NetworkManager;
+import com.modding.cof.network.packet.skills.LearnSkillC2S;
 import com.modding.cof.skills.IBaseSkill;
-import com.modding.cof.skills.LvlUpHeal;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SkillButton extends Button {
@@ -38,20 +34,12 @@ public class SkillButton extends Button {
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
         if(type == SkillGuiType.Learnable) {
+            // System.out.println(gSkill.getName());
             type = SkillGuiType.Learned;
-            IBaseSkill skill = new LvlUpHeal();
-            // test way
-            Map<String, ClientLocalSkill> map = new HashMap<>();
-            map.put(
-                skill.getName(),
-                new ClientLocalSkill(1, "")
+            NetworkManager.sendToServer(
+                new LearnSkillC2S(gSkill.getName())
             );
-            ClientSkillsData.set(map);
-        } else {
-
         };
-        // System.out.println("Skill button clicked!");
-        // SkillTreeScreen screen = parentBranch.getScreen();
     }
 
     public int[] getCords() {
@@ -71,19 +59,35 @@ public class SkillButton extends Button {
         float paddingTop = (float) (parentScreen.screenHeight * 0.0349744686);
         float paddingLeft = (float) (parentScreen.screenWidth * 0.0170898438);
 
-        int borderColor = type == SkillGuiType.Learned ? 0x00FF00 : 0xA0000000;
-        int borderThickness = 5;
-
-        fill(poseStack, x-borderThickness, y-borderThickness, this.x+this.width + borderThickness, this.y+this.height + borderThickness, borderColor);
+        int borderColor = type == SkillGuiType.Learned ? 0x00FFFFFF : 0xA0000000;
+        int borderThickness = 2;
 
         RenderSystem.enableScissor(
-                (int) ((parentScreen.window_startX + paddingLeft) * mc.getWindow().getGuiScale()),
-                (int) ((parentScreen.window_startY + paddingTop) * mc.getWindow().getGuiScale()),
-                (int) ((parentScreen.screenWidth - paddingLeft * 2) * mc.getWindow().getGuiScale()),
-                (int) ((parentScreen.screenHeight - paddingTop * 2) * mc.getWindow().getGuiScale()));
+            (int) ((parentScreen.window_startX + paddingLeft) * mc.getWindow().getGuiScale()),
+            (int) ((parentScreen.window_startY + paddingTop) * mc.getWindow().getGuiScale()),
+            (int) ((parentScreen.screenWidth - paddingLeft * 2) * mc.getWindow().getGuiScale()),
+            (int) ((parentScreen.screenHeight - paddingTop * 2) * mc.getWindow().getGuiScale())
+        );
+        RenderSystem.setShaderTexture(
+            0,
+            new ResourceLocation(CoFMod.MOD_ID,
+                type == SkillGuiType.Learnable ? "textures/skills/bg_skill_to_learn.png" : "textures/skills/bg_skill_learned.png"
+            )
+        );
+        poseStack.pushPose();
+        poseStack.translate(x-borderThickness, y-borderThickness, 0);
+        blit(poseStack,
+            0, 0,
+            0, 0, 0,
+            this.width + borderThickness*2,
+            this.height + borderThickness*2,
+            this.width + borderThickness*2,
+            this.height + borderThickness*2
+        );
+        poseStack.popPose();
         fill(poseStack, x, y, x + width, y + height, isHovered ? 0xA0000000 : 0x80000000);
 
-        RenderSystem.setShaderTexture(0, ICON_TEXTURE);
+        RenderSystem.setShaderTexture(0, gSkill.getIconResource());
         poseStack.pushPose();
         poseStack.translate(x, y, 0);
         blit(poseStack, 0, 0, 0, 0, width, height, width, height);

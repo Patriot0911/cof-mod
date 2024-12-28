@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.modding.cof.client.data.subClasses.ClientLocalSkill;
 import com.modding.cof.interfaces.ICapabilityPlayerState;
+import com.modding.cof.skills.IBaseSkill;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
@@ -21,15 +22,30 @@ public class PlayerSkills implements ICapabilityPlayerState<PlayerSkills> {
         this.skills = source.skills;
     };
 
+    public void addSkill(IBaseSkill skill) {
+        if(this.skills == null) {
+            this.skills = new HashMap<>();
+        };
+        ClientLocalSkill skillData = new ClientLocalSkill(1, null);
+        this.skills.put(skill.getName(), skillData);
+    };
+
+    public int lvlUpSkill(String name) {
+        ClientLocalSkill skillData = this.skills.get(name);
+        int count = ++skillData.lvl;
+        return count;
+    };
+
     public void saveNBTData(CompoundTag nTag) {
         CompoundTag mapTag = new CompoundTag();
         if(this.skills != null) {
             for(Map.Entry<String, ClientLocalSkill> skill : skills.entrySet()) {
-                // можна винести у метод ClientLocalSkill
                 CompoundTag skillTag = new CompoundTag();
                 skillTag.putString("name", skill.getKey());
                 skillTag.putInt("level", skill.getValue().lvl);
-                skillTag.putString("args", skill.getValue().args);
+                skillTag.putString("args",
+                    skill.getValue().args == null ? "" : skill.getValue().args
+                );
                 mapTag.put(skill.getKey(), skillTag);
             };
         };
@@ -46,7 +62,6 @@ public class PlayerSkills implements ICapabilityPlayerState<PlayerSkills> {
             CompoundTag mapTag = nTag.getCompound("skills");
             for(String key : mapTag.getAllKeys()) {
                 CompoundTag skillTag = mapTag.getCompound(key);
-                // String skillName = skillTag.getString("name");
                 int skillLevel = skillTag.getInt("level");
                 String skillArgs = skillTag.getString("args");
                 ClientLocalSkill skillItem = new ClientLocalSkill(skillLevel, skillArgs);

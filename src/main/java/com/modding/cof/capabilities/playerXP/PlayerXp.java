@@ -1,5 +1,7 @@
 package com.modding.cof.capabilities.playerXP;
 
+import java.lang.annotation.Retention;
+
 import com.modding.cof.capabilities.level.PlayerLevelProvider;
 import com.modding.cof.interfaces.ICapabilityPlayerState;
 
@@ -18,6 +20,14 @@ public class PlayerXp implements ICapabilityPlayerState<PlayerXp> {
 
     public int getTotalXp() {
         return this.totalXp;
+    };
+
+    public int takeTotalXp(int count) {
+        int newXp = this.totalXp - count;
+        if(newXp < 0) return this.totalXp;
+        this.totalXp = newXp;
+        System.err.println(newXp);
+        return newXp;
     };
 
     /*

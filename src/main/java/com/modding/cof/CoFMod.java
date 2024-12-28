@@ -1,11 +1,21 @@
 package com.modding.cof;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.slf4j.Logger;
 
 import com.modding.cof.item.Items;
 import com.modding.cof.item.custom_items_recipes.SmithPotionBrewingRecipe;
 import com.modding.cof.modEvents.construction.ModEventBus;
 import com.modding.cof.network.NetworkManager;
+import com.modding.cof.skills.Armor;
+import com.modding.cof.skills.ArrowRestore;
+import com.modding.cof.skills.IBaseSkill;
+import com.modding.cof.skills.LvlUpHeal;
+import com.modding.cof.skills.Starvation;
+import com.modding.cof.skills.ToolsRepair;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.Minecraft;
@@ -27,6 +37,16 @@ public class CoFMod
 {
     public static final String MOD_ID = "cof";
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static List<IBaseSkill> skills = new ArrayList<>(
+        Arrays.asList(
+            new LvlUpHeal(),
+            new ArrowRestore(),
+            new Starvation(),
+            new Armor(),
+            new ToolsRepair()
+        )
+    );
 
     public CoFMod()
     {

@@ -10,8 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-public class LvlUpHeal implements IBaseSkill {
-    public final static String name = "lvlup_heal";
+public class ArrowRestore implements IBaseSkill {
+    public final static String name = "arrow_restore";
     public final static String langName = "skill.cof." + name;
 
     public String getLangName() {
@@ -38,7 +38,7 @@ public class LvlUpHeal implements IBaseSkill {
     };
 
     public ResourceLocation getIconResource() {
-        String skillTextureName = "health_onlvlup.png";
+        String skillTextureName = "arrow_restore.png";
         return new ResourceLocation(CoFMod.MOD_ID, "textures/skills/" + skillTextureName);
     };
 
